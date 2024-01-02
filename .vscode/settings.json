@@ -1,0 +1,26 @@
+{
+    "files.exclude": {
+        "**/bin" : true,
+        // "**/build" : true,
+        ".gradle" : true,
+        "gradle" : true,
+        ".gitignore" : true,
+        "gradlew" : true,
+        "gradlew.bat" :true
+    },
+    "java.configuration.runtimes": [
+        {
+            "default": true,
+            "name": "JavaSE-17",
+            // "path": "/usr/lib/jvm/jdk-17"
+            "path" : "C:/Program Files/Java/jdk-17"
+        }
+    ],
+    "java.debug.settings.console": "internalConsole",
+    // "java.jdt.ls.java.home": "/usr/lib/jvm/jdk-17",
+    "java.jdt.ls.java.home": "C:/Program Files/Java/jdk-17",
+    "java.codeGeneration.toString.skipNullValues": true,
+    "java.inlayHints.parameterNames.enabled": "none",
+    "debug.autoExpandLazyVariables": true,
+    "java.configuration.updateBuildConfiguration": "interactive"
+}

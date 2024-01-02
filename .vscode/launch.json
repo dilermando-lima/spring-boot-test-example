@@ -1,0 +1,13 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "console": "internalConsole",
+            "mainClass": "demo.App",
+            "projectName": "spring-boot-test-example"
+        }
+    ]
+
+}

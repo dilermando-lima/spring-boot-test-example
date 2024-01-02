@@ -1,0 +1,15 @@
+server:
+    port: '8081'
+    error.include-message: 'always'
+spring:
+    main.banner-mode: 'off'
+    jpa.database-platform: org.hibernate.dialect.H2Dialect
+
+    datasource.username: sa
+    datasource.url: jdbc:h2:mem:testdb
+    datasource.driverClassName: org.h2.Driver
+    datasource.password: password
+
+    mvc.throw-exception-if-no-handler-found: 'true'
+    web.resources.add-mappings: 'false'
+
