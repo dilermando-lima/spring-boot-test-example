@@ -27,7 +27,7 @@ import demo.model.AnyEntity;
 import demo.repository.AnyRepository;
 
 /**
- * <h3>Tests of {@link CreateService} </h3>
+ * <p>Tests of {@link GetByIdService}</p>
  * <pre>
  *{@link when_getById} {
  *  {@link when_getById#GIVEN_request_sucessfully_WHEN_getById_SHOULD_run_sucessfully()}

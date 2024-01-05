@@ -14,6 +14,7 @@ public interface ErrMessage {
 
     public static final MsgBaseWithParams ID_NOT_FOUND = "id %s not found"::formatted;
     public static final MsgBase BODY_NOT_FOUND = () -> "body request not found";
+    public static final MsgBase REQUEST_CANNOT_BE_NULL = () -> "request cannot be null";
     public static final MsgBase NAME_IS_REQUIRED = () -> "name is required";
     public static final MsgBase NAME_MUST_BE_LESS_THAN_50_CARACT = () -> "name must be less than 50 caract";
     public static final MsgBase ID_IS_REQUIRED = () -> "id is required";

@@ -1,7 +1,7 @@
 {
     "files.exclude": {
         "**/bin" : true,
-        // "**/build" : true,
+        //"**/build" : true,
         ".gradle" : true,
         "gradle" : true,
         ".gitignore" : true,

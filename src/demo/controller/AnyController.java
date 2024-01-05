@@ -39,8 +39,9 @@ public class AnyController {
     @GetMapping
     public ResponseEntity<List<ListService.ResponseItem>> list(
             @RequestParam(name = "numPage", required = false) Integer numPage,
-            @RequestParam(name = "sizePage", required = false) Integer sizePage) {
-        return ResponseEntity.ok(listService.list(numPage, sizePage));
+            @RequestParam(name = "sizePage", required = false) Integer sizePage,
+            @RequestParam(name = "filter", required = false) String filter) {
+        return ResponseEntity.ok(listService.list(new ListService.Request(numPage, sizePage, filter)));
     }
 
     @GetMapping("/{id}")

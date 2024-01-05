@@ -30,7 +30,17 @@ dependencies {
  	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+task validateJavadocForTests(type: Javadoc) {
+	source = sourceSets.test.allJava
+	classpath = sourceSets.test.compileClasspath 
+    destinationDir = file("${buildDir}/tst/docs/javadoc")
+	options.addStringOption('Xmaxwarns', '1')
+	options.addBooleanOption('package', true) 
+}
+
+
 test {
+	dependsOn validateJavadocForTests
     testLogging.events = ["passed", "skipped", "failed"]
     useJUnitPlatform()
 }
@@ -38,3 +48,5 @@ test {
 jacocoTestReport {
 	dependsOn test
 }
+
+

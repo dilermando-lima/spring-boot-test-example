@@ -11,8 +11,11 @@ import demo.repository.AnyRepository;
 @Service
 public class RemoveByIdService {
 
-    @Autowired
     AnyRepository anyRepository;
+
+    public RemoveByIdService(@Autowired AnyRepository anyRepository){
+        this.anyRepository = anyRepository;
+    }
 
     public void removeById(String id){
         validateIdRequest(id);
