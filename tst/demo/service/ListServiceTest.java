@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.when;
 
@@ -19,9 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import demo.constant.ErrMessage;
@@ -34,8 +34,8 @@ import demo.service.ListService.ResponseItem;
  * <p>Tests of {@link ListService}</p>
  * <pre>
  *{@link when_list} {
- *  {@link when_list#GIVEN_request_sucessfully_WHEN_list_SHOULD_run_all_steps_on_right_order(Page)}
- *  {@link when_list#GIVEN_request_sucessfully_WHEN_list_SHOULD_run_sucessfully(Page)}
+ *  {@link when_list#GIVEN_request_sucessfully_WHEN_list_SHOULD_run_all_steps_on_right_order()}
+ *  {@link when_list#GIVEN_request_sucessfully_WHEN_list_SHOULD_run_sucessfully()}
  *}
  *{@link when_validateRequest} {
  *  {@link when_validateRequest#GIVEN_request_null_WHEN_validateRequest_SHOULD_throw_internal_server_error()}
@@ -44,6 +44,14 @@ import demo.service.ListService.ResponseItem;
  *  {@link when_validateRequest#GIVEN_request_with_numPage_less_than_zero_WHEN_validateRequest_SHOULD_throw_bad_request()}
  *  {@link when_validateRequest#GIVEN_request_with_sizePage_less_than_zero_WHEN_validateRequest_SHOULD_throw_bad_request()}
  *  {@link when_validateRequest#GIVEN_request_with_sizePage_more_than_max_allowed_WHEN_validateRequest_SHOULD_throw_bad_request()}
+ *}
+*{@link when_convertListEntityToListResponse} {
+ *  {@link when_convertListEntityToListResponse#GIVEN_list_entity_null_WHEN_convertListEntityToListResponset_SHOULD_return_nonnull_and_empty_response()}
+ *  {@link when_convertListEntityToListResponse#GIVEN_list_entity_sucessfully_WHEN_convertListEntityToListResponset_SHOULD_return_response_successfully()}
+ *}
+ *{@link when_handleRequestPagination} {
+ *  {@link when_handleRequestPagination#GIVEN_request_with_numPage_and_sizePage_more_than_ZERO_WHEN_handleRequestPagination_SHOULD_return_request_successfully()}
+ *  {@link when_handleRequestPagination#GIVEN_request_with_numPage_and_sizePage_null_WHEN_handleRequestPagination_SHOULD_return_request_with_default_values()}
  *}
  * </pre>
  */
@@ -63,17 +71,14 @@ final class ListServiceTest extends ListServiceFixture {
     @Nested
     class when_list {
 
+
         @Test
-        void GIVEN_request_sucessfully_WHEN_list_SHOULD_run_sucessfully(@Mock Page<AnyEntity> pageMock){
+        void GIVEN_request_sucessfully_WHEN_list_SHOULD_run_sucessfully(){
 
             final List<AnyEntity> listEntityGotFromDatabase = LIST_ANY_ENTITY_SUCCESSFULLY.get();
             final Request requestIdInput = REQUEST_SUCCESSFULLY.get();
 
-            
-            when(pageMock.getContent()).thenReturn(listEntityGotFromDatabase);
-
-            when(anyRepositoryMock.findAll(ArgumentMatchers.<Specification<AnyEntity>>any(), ArgumentMatchers.<Pageable>any()))
-                .thenReturn(pageMock);
+            when(anyRepositoryMock.listByFilter(anyInt(), anyInt(), anyString())).thenReturn(listEntityGotFromDatabase);
 
             final List<ResponseItem> expectedResponse = listService.list(requestIdInput);
 
@@ -87,25 +92,20 @@ final class ListServiceTest extends ListServiceFixture {
         }
 
         @Test
-        void GIVEN_request_sucessfully_WHEN_list_SHOULD_run_all_steps_on_right_order(@Mock Page<AnyEntity> pageMock){
+        void GIVEN_request_sucessfully_WHEN_list_SHOULD_run_all_steps_on_right_order(){
 
             final List<AnyEntity> listEntityGotFromDatabase = LIST_ANY_ENTITY_SUCCESSFULLY.get();
             final ListService.Request requestIdInput = REQUEST_SUCCESSFULLY.get();
 
-            
-            when(pageMock.getContent()).thenReturn(listEntityGotFromDatabase);
-
-            when(anyRepositoryMock.findAll(ArgumentMatchers.<Specification<AnyEntity>>any(), ArgumentMatchers.<Pageable>any()))
-                .thenReturn(pageMock);
+            when(anyRepositoryMock.listByFilter(anyInt(), anyInt(), anyString())).thenReturn(listEntityGotFromDatabase);
     
             InOrder inOrder = inOrder(listService);
             
             listService.list(requestIdInput);
 
             inOrder.verify(listService).validateRequest(any(Request.class));
-            inOrder.verify(listService).buildPageable(any(Request.class));
-            inOrder.verify(listService).buildSpecification(any(Request.class));
-            inOrder.verify(listService).listEntity(ArgumentMatchers.<Specification<AnyEntity>>any(), ArgumentMatchers.<Pageable>any());
+            inOrder.verify(listService).handleRequestPagination(any(Request.class));
+            inOrder.verify(listService).listEntity(any(Request.class));
             inOrder.verify(listService).convertListEntityToListResponse(ArgumentMatchers.<List<AnyEntity>>any());
             
         }
@@ -114,23 +114,42 @@ final class ListServiceTest extends ListServiceFixture {
     }
 
     /**
-     *  testing all scenarios from {@link ListService#buildPageable(demo.service.ListService.Request)}
+     *  testing all scenarios from {@link ListService#handleRequestPagination(Request)}
      */
     @Nested
-    class when_buildPageable {
+    class when_handleRequestPagination {
 
+        @Test
+        void GIVEN_request_with_numPage_and_sizePage_more_than_ZERO_WHEN_handleRequestPagination_SHOULD_return_request_successfully(){
+
+            final ListService.Request requestWithNumPageAndSizePageMoreThanZERO = REQUEST_WITH_NUM_PAGE_AND_SIZE_PAGE_MORE_THAN_ZERO.get();
+
+            final ListService.Request responseRequest = listService.handleRequestPagination(requestWithNumPageAndSizePageMoreThanZERO);
+
+            assertEquals(responseRequest.sizePage(), requestWithNumPageAndSizePageMoreThanZERO.sizePage());
+            assertEquals(responseRequest.numPage(), requestWithNumPageAndSizePageMoreThanZERO.numPage());
+        }
+
+
+
+        @Test
+        void GIVEN_request_with_numPage_and_sizePage_null_WHEN_handleRequestPagination_SHOULD_return_request_with_default_values(){
+
+            final ListService.Request requestWithAllAttrNull= REQUEST_WITH_ALL_ATTRS_NULL.get();
+
+            final int expectedSizePageDefault = 10;
+            final int expectedNumPageDefault = 0;
+
+            ReflectionTestUtils.setField(listService, "defaultSizePage", expectedSizePageDefault);
+
+           final ListService.Request responseRequest = listService.handleRequestPagination(requestWithAllAttrNull);
+
+            assertEquals(responseRequest.sizePage(), expectedSizePageDefault);
+            assertEquals(responseRequest.numPage(), expectedNumPageDefault);
+        }
       
     }
 
-
-    /**
-     *  testing all scenarios from {@link ListService#buildSpecification(demo.service.ListService.Request)}
-     */
-    @Nested
-    class when_buildSpecification {
-
-      
-    }
 
     /**
      *  testing all scenarios from {@link ListService#validateRequest(demo.service.ListService.Request)}
@@ -207,6 +226,30 @@ final class ListServiceTest extends ListServiceFixture {
      */
     @Nested
     class when_convertListEntityToListResponse {
+
+         @Test
+        void GIVEN_list_entity_sucessfully_WHEN_convertListEntityToListResponset_SHOULD_return_response_successfully(){
+
+            final List<AnyEntity> listEntitySucessfully = LIST_ANY_ENTITY_SUCCESSFULLY.get();
+      
+            final List<ResponseItem> expectedResponse = listService.convertListEntityToListResponse(listEntitySucessfully);
+
+            assertNotNull(expectedResponse);
+            assertEquals(2, expectedResponse.size());
+            assertEquals(listEntitySucessfully.get(0).getId(), expectedResponse.get(0).id());
+            assertEquals(listEntitySucessfully.get(0).getName(), expectedResponse.get(0).name());
+            assertEquals(listEntitySucessfully.get(1).getId(), expectedResponse.get(1).id());
+            assertEquals(listEntitySucessfully.get(1).getName(), expectedResponse.get(1).name());
+
+        }
+
+        @Test
+        void GIVEN_list_entity_null_WHEN_convertListEntityToListResponset_SHOULD_return_nonnull_and_empty_response(){
+            final List<AnyEntity> listEntitySucessfully = LIST_ANY_ENTITY_NULL.get();
+            final List<ResponseItem> expectedResponse = listService.convertListEntityToListResponse(listEntitySucessfully);
+            assertNotNull(expectedResponse);
+            assertEquals(0, expectedResponse.size());
+        }
 
       
     }

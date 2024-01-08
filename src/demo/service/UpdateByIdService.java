@@ -36,12 +36,6 @@ public class UpdateByIdService {
         return anyEntity;
     }
 
-    AnyEntity convertRequestToEntity(Request request) {
-        var anyEntity =  new AnyEntity();
-        anyEntity.setName(request.name);
-        return anyEntity;
-    }
-
     AnyEntity getEntityById(String id) {
         return anyRepository
                 .findById(id)

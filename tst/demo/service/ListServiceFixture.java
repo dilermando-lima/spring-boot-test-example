@@ -11,6 +11,7 @@ import demo.model.AnyEntity;
 abstract sealed class ListServiceFixture permits ListServiceTest {
 
     protected final Supplier<ListService.Request> REQUEST_SUCCESSFULLY = () -> new ListService.Request(0, 10, "filter-1");
+    protected final Supplier<ListService.Request> REQUEST_WITH_NUM_PAGE_AND_SIZE_PAGE_MORE_THAN_ZERO = () -> new ListService.Request(2, 10, null);
     protected final Supplier<ListService.Request> REQUEST_NULL = () -> null;
     protected final Supplier<ListService.Request> REQUEST_WITH_ALL_ATTRS_NULL = () -> new ListService.Request(null,null,null);
     protected final Supplier<ListService.Request> REQUEST_WITH_NUM_PAGE_LESS_THAN_ZERO = () -> new ListService.Request(-1, 10, "filter-1");
@@ -32,6 +33,8 @@ abstract sealed class ListServiceFixture permits ListServiceTest {
         
         return List.of(anyEntity1, anyEntity2);
     };
+
+    protected final Supplier<List<AnyEntity>> LIST_ANY_ENTITY_NULL = () -> null;
     
     
 }

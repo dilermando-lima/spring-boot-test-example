@@ -1,14 +1,10 @@
 package demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,36 +30,25 @@ public class ListService {
     
     public List<ResponseItem> list(Request request){  
         validateRequest(request);
-        Pageable pageable = buildPageable(request);
-        Specification<AnyEntity> specification = buildSpecification(request);
-        List<AnyEntity> anyEntityList = listEntity(specification, pageable);
+        request = handleRequestPagination(request);
+        List<AnyEntity> anyEntityList = listEntity(request);
         return convertListEntityToListResponse(anyEntityList);
     }
-
-    Specification<AnyEntity> buildSpecification(Request request) {
-        return (root, query, criteriaBuilder) -> {
-            if(request.filter() != null && !request.filter().trim().isBlank() ){
-                return criteriaBuilder.like(root.get("name"), "%" + request.filter() + "%");
-            }else{
-                return criteriaBuilder.conjunction();
-            }
-        };
-    }
-
+    
     List<ResponseItem> convertListEntityToListResponse(List<AnyEntity> anyEntity) {
+        if(anyEntity == null) return new ArrayList<>();
         return anyEntity.stream().map(e ->  new ResponseItem(e.getId(), e.getName())).toList();
     }
 
-    List<AnyEntity> listEntity(Specification<AnyEntity> specification, Pageable pageable) {
-        return anyRepository.findAll(specification, pageable).getContent();
+    List<AnyEntity> listEntity(Request request) {
+        return anyRepository.listByFilter(request.numPage, request.sizePage, request.filter);
     }
 
-    Pageable buildPageable(Request request) {
-        final Sort defaultSortList  = Sort.by(Direction.DESC, "id");
-        return PageRequest.of(
+    Request handleRequestPagination(Request request) {
+        return new Request(
                 request.numPage == null ? 0 : request.numPage, 
                 request.sizePage == null ?  defaultSizePage : request.sizePage, 
-                defaultSortList
+                request.filter
             );
     }
 
