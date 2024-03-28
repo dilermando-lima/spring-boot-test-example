@@ -10,7 +10,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -212,10 +212,10 @@ final class UpdateByIdServiceTest extends UpdateByIdServiceTestFixture{
             
             final AnyEntity anyEntityToUpdate = ANY_ENTITY_SUCCESSFULLY.get();
             final UpdateByIdService.Request requestInput = REQUEST_SUCCESSFULLY.get();
-            final ZonedDateTime expectedDateLastUpdated = ZonedDateTime.now().plusDays(15);
+            final LocalDateTime expectedDateLastUpdated = LocalDateTime.now().plusDays(15);
 
-            try(MockedStatic<ZonedDateTime> mockedStatic = Mockito.mockStatic(ZonedDateTime.class)){
-                when(ZonedDateTime.now()).thenReturn(expectedDateLastUpdated);
+            try(MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)){
+                when(LocalDateTime.now()).thenReturn(expectedDateLastUpdated);
      
                 final var expectedAnyEntity = updateByIdService.prepareEntityBeforeUpdating(anyEntityToUpdate, requestInput);
 

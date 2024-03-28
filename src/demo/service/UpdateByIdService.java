@@ -1,6 +1,6 @@
 package demo.service;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +31,7 @@ public class UpdateByIdService {
     }
 
     AnyEntity prepareEntityBeforeUpdating(AnyEntity anyEntity, Request request) {
-        anyEntity.setLastUpdated(ZonedDateTime.now());
+        anyEntity.setLastUpdated(LocalDateTime.now());
         anyEntity.setName(request.name);
         return anyEntity;
     }

@@ -1,6 +1,6 @@
 package demo.service;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -24,8 +24,8 @@ abstract sealed class CreateServiceTestFixture permits CreateServiceTest {
     protected final Supplier<AnyEntity> ANY_ENTITY_SUCCESSFULLY = () -> {
         var anyEntity = new AnyEntity();
         anyEntity.setId(UUID.randomUUID().toString());
-        anyEntity.setCreated(ZonedDateTime.now());
-        anyEntity.setLastUpdated(ZonedDateTime.now().plusDays(3));
+        anyEntity.setCreated(LocalDateTime.now());
+        anyEntity.setLastUpdated(LocalDateTime.now().plusDays(3));
         anyEntity.setName("name 1");
         return anyEntity;
     };

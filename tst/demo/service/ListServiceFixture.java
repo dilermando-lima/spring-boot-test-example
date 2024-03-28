@@ -1,6 +1,6 @@
 package demo.service;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -21,14 +21,14 @@ abstract sealed class ListServiceFixture permits ListServiceTest {
     protected final Supplier<List<AnyEntity>> LIST_ANY_ENTITY_SUCCESSFULLY = () -> {
         var anyEntity1 = new AnyEntity();
         anyEntity1.setId(UUID.randomUUID().toString());
-        anyEntity1.setCreated(ZonedDateTime.now().plusDays(1));
-        anyEntity1.setLastUpdated(ZonedDateTime.now().plusDays(3));
+        anyEntity1.setCreated(LocalDateTime.now().plusDays(1));
+        anyEntity1.setLastUpdated(LocalDateTime.now().plusDays(3));
         anyEntity1.setName("name 1");
 
         var anyEntity2 = new AnyEntity();
         anyEntity2.setId(UUID.randomUUID().toString());
-        anyEntity2.setCreated(ZonedDateTime.now().plusDays(2));
-        anyEntity2.setLastUpdated(ZonedDateTime.now().plusDays(5));
+        anyEntity2.setCreated(LocalDateTime.now().plusDays(2));
+        anyEntity2.setLastUpdated(LocalDateTime.now().plusDays(5));
         anyEntity2.setName("name 2");
         
         return List.of(anyEntity1, anyEntity2);

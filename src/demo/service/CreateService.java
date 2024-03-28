@@ -1,6 +1,6 @@
 package demo.service;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,7 +42,7 @@ public class CreateService {
     }
 
     AnyEntity prepareEntityBeforeCreating(AnyEntity anyEntity) {
-        final ZonedDateTime now = ZonedDateTime.now();
+        final LocalDateTime now = LocalDateTime.now();
         anyEntity.setCreated(now);
         anyEntity.setLastUpdated(now);
         return anyEntity;

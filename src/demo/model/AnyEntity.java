@@ -1,6 +1,6 @@
 package demo.model;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,10 +22,10 @@ public class AnyEntity {
     private String name;
 
     @Column(name = "created", nullable = false, updatable = false)
-    private ZonedDateTime created;
+    private LocalDateTime created;
 
     @Column(name = "last_updated", nullable = false)
-    private ZonedDateTime lastUpdated;
+    private LocalDateTime lastUpdated;
 
     public String getId() {
         return id;
@@ -43,19 +43,19 @@ public class AnyEntity {
         this.name = name;
     }
 
-    public ZonedDateTime getCreated() {
+    public LocalDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(ZonedDateTime created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
-    public ZonedDateTime getLastUpdated() {
+    public LocalDateTime getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(ZonedDateTime lastUpdated) {
+    public void setLastUpdated(LocalDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 

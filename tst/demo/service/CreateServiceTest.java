@@ -10,7 +10,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -177,10 +177,10 @@ final class CreateServiceTest extends CreateServiceTestFixture{
         void GIVEN_entity_without_dates_WHEN_prepareEntityBeforeCreating_SHOULD_return_entity_with_dates(){
             
             final AnyEntity anyEntityWithoutDates = ANY_ENTITY_WITH_NO_DATES.get();
-            final ZonedDateTime expectedDateCreatedAndLastUpdated = ZonedDateTime.now().plusDays(15);
+            final LocalDateTime expectedDateCreatedAndLastUpdated = LocalDateTime.now().plusDays(15);
 
-            try(MockedStatic<ZonedDateTime> mockedStatic = Mockito.mockStatic(ZonedDateTime.class)){
-                when(ZonedDateTime.now()).thenReturn(expectedDateCreatedAndLastUpdated);
+            try(MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)){
+                when(LocalDateTime.now()).thenReturn(expectedDateCreatedAndLastUpdated);
      
                 final var expectedAnyEntity = createService.prepareEntityBeforeCreating(anyEntityWithoutDates);
 

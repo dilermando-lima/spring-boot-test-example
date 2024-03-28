@@ -1,6 +1,6 @@
 package demo.service;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ public class GetByIdService {
     @Autowired
     AnyRepository anyRepository;
 
-    public record Response(String id, String name, ZonedDateTime created,  ZonedDateTime lastUpdated) {}
+    public record Response(String id, String name, LocalDateTime created,  LocalDateTime lastUpdated) {}
 
     public Response getById(String id){
         validateIdRequest(id);
